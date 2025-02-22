@@ -1,101 +1,147 @@
-import Image from "next/image";
+"use client";
+import { useState } from "react";
+import { Inter } from "next/font/google";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RemoveIcon from "@mui/icons-material/Remove";
+
+type ListItem = {
+    item: string;
+    count: number;
+};
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    const [input, setInput] = useState({
+        item: "",
+        count: 0,
+    });
+    const [lists, setLists] = useState<ListItem[]>([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    function handleChange(e: any) {
+        const { name, value } = e.target;
+        setInput((p) => {
+            return { ...p, [name]: value, count: 1 };
+        });
+    }
+
+    function handleClick() {
+        setLists((p) => {
+            return [...p, input];
+        });
+
+        setInput({
+            item: "",
+            count: 0,
+        });
+    }
+
+    function handleDelete(index: any) {
+        setLists((p) => {
+            return p.filter((v, i) => {
+                return i !== index;
+            });
+        });
+    }
+
+    function handlePlus(index: any) {
+        setLists((p) => {
+            return p.map((v, i) => {
+                return i === index ? { ...v, count: v.count + 1 } : v;
+            });
+        });
+    }
+
+    function handleMin(index: any) {
+        setLists((p) => {
+            return p.map((v, i) => {
+                return i === index && v.count !== 1
+                    ? { ...v, count: v.count - 1 }
+                    : v;
+            });
+        });
+    }
+
+    const countItem = lists.reduce((ac, p) => {
+        return ac + p.count;
+    }, 0);
+
+    return (
+        <div className="h-[100vh] bg-slate-200 font-[inter]">
+            <nav className="font-[serif] bg-teal-500 px-5 py-2 border-red-300 mb-10">
+                <h1 className="font-semibold text-3xl tracking-[3px]">list</h1>
+            </nav>
+            <div className="w-[35%]  my-5 mx-auto">
+                <form action="" className="flex align-middle justify-between">
+                    <input
+                        name="item"
+                        type="text"
+                        className="w-[90%] px-2 py-1 text-lg border border-sky-300 rounded focus:outline-none focus:ring-sky-300 focus:ring-2"
+                        placeholder="What do you wanna buy.."
+                        onChange={handleChange}
+                        value={input.item}
+                    />
+                    <button
+                        type="button"
+                        onClick={handleClick}
+                        className="text-slate-600 cursor-pointer border border-sky-600 bg-sky-300 text-xs rounded-full hover:bg-sky-600 hover:text-slate-100 shadow-md p-1 ml-3 size-10"
+                    >
+                        <AddIcon />
+                    </button>
+                </form>
+            </div>
+
+            {lists.map((list, index) => {
+                return (
+                    <div
+                        key={index}
+                        className="w-[35%]  my-5 mx-auto bg-sky-200 px-3 py-2 shadow-md  rounded flex align-middle justify-between"
+                    >
+                        <h2 className="text-xl text-slate-600">{list.item}</h2>
+
+                        <div className="flex align-middle justify-evenly gap-2">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    handleMin(index);
+                                }}
+                                className="text-slate-600 cursor-pointer border border-sky-600 bg-sky-300 text-xs rounded-full hover:bg-sky-600 hover:text-slate-100 shadow-md p-1"
+                            >
+                                <RemoveIcon />
+                            </button>
+
+                            <p className="text-xl text-slate-600">
+                                {list.count}
+                            </p>
+
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    handlePlus(index);
+                                }}
+                                className="text-slate-600 cursor-pointer border border-sky-600 bg-sky-300 text-xs rounded-full hover:bg-sky-600 hover:text-slate-100 shadow-md p-1"
+                            >
+                                <AddIcon />
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    handleDelete(index);
+                                }}
+                                className="text-slate-600 cursor-pointer border border-sky-600 bg-sky-300 text-xs rounded-full hover:bg-sky-600 hover:text-slate-100 shadow-md p-1 ml-3"
+                            >
+                                <DeleteIcon />
+                            </button>
+                        </div>
+                    </div>
+                );
+            })}
+
+            <div className="w-full bg-teal-500 absolute bottom-0 h-20 shadow text-center p-5">
+                <p className="text-xl mx-auto text-slate-600">
+                    total item: {countItem}
+                </p>
+            </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+    );
 }
