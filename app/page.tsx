@@ -73,7 +73,7 @@ export default function Home() {
                         list
                     </h1>
                 </nav>
-                <div className="w-[35%]  my-5 mx-auto">
+                <div className="w-[80%]  my-5 mx-auto md:w-[40%]">
                     <form
                         action=""
                         className="flex align-middle justify-between"
@@ -100,7 +100,7 @@ export default function Home() {
                     return (
                         <div
                             key={index}
-                            className="w-[35%]  my-5 mx-auto bg-sky-200 px-3 py-2 shadow-md  rounded flex align-middle justify-between"
+                            className="w-[80%] md:w-[40%] my-5 mx-auto bg-sky-200 px-3 py-2 shadow-md  rounded flex align-middle justify-between"
                         >
                             <h2 className="text-xl text-slate-600 mt-1">
                                 {list.item}
