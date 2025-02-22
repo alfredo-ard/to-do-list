@@ -102,7 +102,7 @@ export default function Home() {
                             key={index}
                             className="w-[35%]  my-5 mx-auto bg-sky-200 px-3 py-2 shadow-md  rounded flex align-middle justify-between"
                         >
-                            <h2 className="text-xl text-slate-600">
+                            <h2 className="text-xl text-slate-600 mt-1">
                                 {list.item}
                             </h2>
 
@@ -117,7 +117,7 @@ export default function Home() {
                                     <RemoveIcon />
                                 </button>
 
-                                <p className="text-xl text-slate-600">
+                                <p className="text-xl text-slate-600 mt-1">
                                     {list.count}
                                 </p>
 
